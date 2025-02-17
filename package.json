@@ -1,0 +1,21 @@
+{
+	"private": true,
+	"packageManager": "yarn@4.6.0",
+	"workspaces": [
+		"packages/*"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sergeychernov/telegram-settings-menu"
+	},
+	"scripts": {
+		"build": "yarn workspaces foreach -A run build",
+		"test": "yarn workspaces foreach -A run test",
+		"publish": "yarn workspaces foreach -A run publish",
+		"generate:demo-bot-settings-json": "node packages/telegram-settings-menu-generator/bin/index.js --path \"./packages/demo-bot/settings.ts\""
+	},
+	"dependencies": {
+		"telegraf": "^4.16.3",
+		"typegram": "^5.2.0"
+	}
+}

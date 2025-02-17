@@ -1,0 +1,28 @@
+{
+	"name": "tele-menu-demo-bot",
+	"version": "1.0.34",
+	"description": "Генератор inline-меню для Telegram ботов",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sergeychernov/telegram-settings-menu"
+	},
+	"scripts": {
+		"build": "tsc && cp package.json dist/ && cp ydb-key.json dist/ && cd dist && zip -r ../dist.zip . && cd ..",
+		"test": "echo \"No tests yet\"",
+		"publish": "echo \"No publish yet\""
+	},
+	"dependencies": {
+		"@types/node": "^22.10.10",
+		"@yandex-cloud/function-types": "^2.1.2",
+		"@yandex-cloud/nodejs-sdk": "^2.7.7",
+		"telegraf": "^4.16.3",
+		"telegram-settings-menu": "^1.0.0"
+	},
+	"devDependencies": {
+		"typescript": "^5.4.0",
+		"zip-cli": "^0.0.0"
+	},
+	"license": "MIT"
+}

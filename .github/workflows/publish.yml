@@ -1,0 +1,37 @@
+name: Publish Packages to NPM
+
+on:
+  push:
+    branches:
+      - master  # Запускаем CI/CD только при пуше в master
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout репозитория
+        uses: actions/checkout@v4
+
+      - name: 📦 Установка Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          registry-url: "https://registry.npmjs.org/"
+          scope: "@your-username" # Укажи свой username, если у тебя scoped-пакет
+
+      - name: 📦 Установка зависимостей
+        run: npm install
+
+      - name: 🏗️ Сборка всех пакетов
+        run: npm run build --workspaces
+
+      - name: 🚀 Публикация `telegram-settings-menu`
+        run: cd packages/telegram-settings-menu && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: 🚀 Публикация `telegram-settings-menu-generator`
+        run: cd packages/telegram-settings-menu-generator && npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

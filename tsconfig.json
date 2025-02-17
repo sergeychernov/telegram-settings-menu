@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "NodeNext",  
+    "moduleResolution": "node16",  
+    "target": "ES2022",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "composite": true,
+   "declarationMap": true
+  },
+  "include": ["packages/*/src"]
+}

@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+	  "outDir": "./dist",
+	  "target": "ESNext",
+    "module": "commonjs",
+	  "declaration": true,
+	  "declarationMap": true,  // 💡 Добавляем, чтобы TypeScript правильно ссылался на исходные файлы
+	  "sourceMap": true,
+	  "esModuleInterop": true,
+	  "moduleResolution": "node",
+    "resolveJsonModule": true,
+	  "typeRoots": ["../../node_modules/@types", "../../node_modules/telegraf/typings/telegram-types"]
+	},
+	"include": ["./src/**/*.ts",
+  "./src/**/*.json"]
+  }

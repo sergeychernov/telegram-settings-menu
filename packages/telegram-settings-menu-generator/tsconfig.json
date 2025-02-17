@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+	  "outDir": "./bin",  // Компиляция в bin/
+	  "target": "ESNext",
+	  "module": "commonjs",
+	  "resolveJsonModule": true,
+	  "esModuleInterop": true,
+	  "declaration": true,
+	  "skipLibCheck": true
+	},
+	"include": ["src"]
+  }
+  

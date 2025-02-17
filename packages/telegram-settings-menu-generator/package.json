@@ -1,0 +1,26 @@
+{
+	"name": "telegram-settings-menu-generator",
+	"version": "1.0.2",
+	"description": "CLI-генератор JSON схем для Telegram-меню",
+	"bin": "./bin/index.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sergeychernov/telegram-settings-menu"
+	},
+	"scripts": {
+		"build": "tsc",
+		"test": "echo \"No tests yet\"",
+		"publish": "npm publish --access public"
+	},
+	"dependencies": {
+		"commander": "^10.0.0",
+		"minimist": "^1.2.8",
+		"ts-json-schema-generator": "^2.3.0",
+		"typescript": "^5.4.0"
+	},
+	"devDependencies": {
+		"@types/minimist": "^1",
+		"@types/node": "^20.5.9"
+	},
+	"license": "MIT"
+}

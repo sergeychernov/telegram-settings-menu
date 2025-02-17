@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "#/definitions/Settings",
+  "definitions": {
+    "Settings": {
+      "type": "object",
+      "properties": {
+        "subscriptionToNews": {
+          "type": "boolean",
+          "title": "Подписка на новости"
+        },
+        "period": {
+          "type": "string",
+          "enum": [
+            "Ежеминутно",
+            "Ежечасно",
+            "Ежедневно"
+          ],
+          "default": "Ежедневно",
+          "title": "Период",
+          "format": "inline"
+        },
+        "boolean": {
+          "type": "object",
+          "properties": {
+            "withoutDefault": {
+              "type": "boolean",
+              "title": "Без Default"
+            },
+            "defaultFalse": {
+              "type": "boolean",
+              "default": false,
+              "title": "Default false"
+            },
+            "defaultTrue": {
+              "type": "boolean",
+              "default": true,
+              "title": "Default true"
+            }
+          },
+          "required": [
+            "defaultFalse",
+            "defaultTrue"
+          ],
+          "additionalProperties": false,
+          "title": "Boolean"
+        }
+      },
+      "required": [
+        "period",
+        "boolean"
+      ],
+      "additionalProperties": false,
+      "title": "Настройки"
+    }
+  }
+}
