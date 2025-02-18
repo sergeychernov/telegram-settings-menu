@@ -14,9 +14,11 @@
 		"publish": "npm publish --access public"
 	},
 	"dependencies": {
+		"lodash.isequal": "^4.5.0",
 		"telegraf": "^4.16.3"
 	},
 	"devDependencies": {
+		"@types/lodash.isequal": "^4",
 		"typescript": "^5.4.0"
 	},
 	"license": "MIT"
