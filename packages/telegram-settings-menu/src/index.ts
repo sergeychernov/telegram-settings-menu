@@ -2,6 +2,7 @@ import { Context } from "telegraf";
 import { InlineKeyboardButton, Message, Update } from "telegraf/types";
 import { Markup, Telegraf } from 'telegraf';
 import { type Schema } from 'ts-json-schema-generator';
+import isEqual from "lodash.isequal";
 function escapeStringRegexp(input:string) {
 	if (typeof input !== 'string') {
 		throw new TypeError('Expected a string');
@@ -98,6 +99,7 @@ export class SettingsMenu<T> {
 	// Обработка нажатий на кнопки
 	private async handleButtonPress(telegramContext: Context,[index, ...rest]: number[] ) {
 		let userContext = await this.getUserContext(Number(telegramContext?.from?.id));
+		const gettedUserContext = JSON.parse(JSON.stringify(userContext));
 		const path = this.getPath(index);
 		const propertySchema = this.getPropertyByPath(path);
 		if (propertySchema && userContext) {
@@ -116,10 +118,12 @@ export class SettingsMenu<T> {
 					setNestedValue(userContext.state, pathToString, value);
 				}
 			}
-			await this.updateUserContext(userContext, telegramContext);
-
-			const keyboard = this.createKeyboard(userContext, path);
-			await this.bot.telegram.editMessageText(userContext.chat_id, userContext.message_id, undefined, this.getTitlesByPath(path).join(' > '), Markup.inlineKeyboard(keyboard));
+			if (!isEqual(gettedUserContext, userContext))
+			{
+				await this.updateUserContext(userContext, telegramContext);
+				const keyboard = this.createKeyboard(userContext, path);
+				await this.bot.telegram.editMessageText(userContext.chat_id, userContext.message_id, undefined, this.getTitlesByPath(path).join(' > '), Markup.inlineKeyboard(keyboard));
+			}
 		} else {
 			console.log('!propertySchema || !userContext', !!propertySchema,!!userContext,path, index);
 			console.log(JSON.stringify(this.schema?.definitions?.Settings));
