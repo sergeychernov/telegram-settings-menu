@@ -78,16 +78,16 @@ export class SettingsMenu<T> {
     private reverseIndexMap: Map<string, number>;
 	private bot: Telegraf<Context<Update>>;
 	private getUserContext: (id: number) => Promise<UserContext<T>>;
-	private updateUserContext: (userContext: UserContext<T>, telegramUserContext?: Context) => Promise<boolean>;
+	private updateUserContext: (userContext: UserContext<T>, telegramContext: Context) => Promise<boolean>;
 
-	constructor(schema: Schema, bot: Telegraf<Context<Update>>, options: {
+	constructor(schema: Schema, bot: Telegraf<Context>, options: {
 		getUserContext: (id:number)=>Promise<UserContext<T>>,
-		updateUserContext?: (userContext: UserContext<T>, telegramUserContext?: Context) => Promise<boolean>,
+		updateUserContext?: (userContext: UserContext<T>, telegramContext: Context) => Promise<boolean>,
 	}) {
 		this.schema = schema;
 		this.bot = bot;
 		this.getUserContext = options.getUserContext;
-		this.updateUserContext = options.updateUserContext || (async (userContext: UserContext<T>) => { console.log('The function updateUserContext requires implementation'); return true; });
+		this.updateUserContext = options.updateUserContext || (async (userContext: UserContext<T>, telegramContext: Context) => { console.log('The function updateUserContext requires implementation'); return true; });
 
 		this.indexMap = new Map();
         this.reverseIndexMap = new Map();
@@ -96,8 +96,8 @@ export class SettingsMenu<T> {
 		this.subscribeToActions();
 	}
 	// Обработка нажатий на кнопки
-	private async handleButtonPress(ctx: Context,[index, ...rest]: number[] ) {
-		let userContext = await this.getUserContext(Number(ctx?.from?.id));
+	private async handleButtonPress(telegramContext: Context,[index, ...rest]: number[] ) {
+		let userContext = await this.getUserContext(Number(telegramContext?.from?.id));
 		const path = this.getPath(index);
 		const propertySchema = this.getPropertyByPath(path);
 		if (propertySchema && userContext) {
@@ -116,7 +116,7 @@ export class SettingsMenu<T> {
 					setNestedValue(userContext.state, pathToString, value);
 				}
 			}
-			await this.updateUserContext(userContext, ctx);
+			await this.updateUserContext(userContext, telegramContext);
 
 			const keyboard = this.createKeyboard(userContext, path);
 			await this.bot.telegram.editMessageText(userContext.chat_id, userContext.message_id, undefined, this.getTitlesByPath(path).join(' > '), Markup.inlineKeyboard(keyboard));
@@ -124,7 +124,7 @@ export class SettingsMenu<T> {
 			console.log('!propertySchema || !userContext', !!propertySchema,!!userContext,path, index);
 			console.log(JSON.stringify(this.schema?.definitions?.Settings));
 		}
-		await ctx.answerCbQuery();
+		await telegramContext.answerCbQuery();
 	}
 
 	private subscribeToActions() {
@@ -137,15 +137,15 @@ export class SettingsMenu<T> {
 			await this.handleButtonPress( ctx, indexes);
 		});
 	}
-	public async show(ctx: TelegramContext) {
-		const id = ctx.from.id;
+	public async show(telegramContext: Context) {
+		const id = telegramContext.from.id;
 		let userContext = await this.getUserContext(id) || { id, state:this.initializeStateWithDefaults()};
-		userContext = { ...userContext, chat_id: ctx.chat?.id };
+		userContext = { ...userContext, chat_id: telegramContext.chat?.id };
 		
 		const keyboard = this.createKeyboard(userContext, []);
-		const message = await ctx.reply(this.getTitlesByPath([]).join(' > '), Markup.inlineKeyboard(keyboard));
+		const message = await telegramContext.reply(this.getTitlesByPath([]).join(' > '), Markup.inlineKeyboard(keyboard));
 		userContext = { ...userContext, message_id: message.message_id };
-		await this.updateUserContext(userContext);
+		await this.updateUserContext(userContext, telegramContext);
 	}
 
 	// 🔹 Рекурсивно индексирует схему

@@ -3,7 +3,7 @@ name: Publish Packages to NPM
 on:
   push:
     branches:
-      - master  # Запускаем CI/CD только при пуше в master
+      - main  # Запускаем CI/CD только при пуше в main
 
 jobs:
   publish:
@@ -12,26 +12,110 @@ jobs:
     steps:
       - name: 📥 Checkout репозитория
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: 📦 Установка Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
           registry-url: "https://registry.npmjs.org/"
-          scope: "@your-username" # Укажи свой username, если у тебя scoped-пакет
+
+      - name: 🛠️ Установка Yarn 4
+        run: |
+          corepack enable
+          corepack prepare yarn@4.6.0 --activate
 
       - name: 📦 Установка зависимостей
-        run: npm install
+        run: yarn install --immutable
 
-      - name: 🏗️ Сборка всех пакетов
-        run: npm run build --workspaces
+      - name: Проверка изменений
+        id: check_changes
+        run: |
+          if git diff --name-only HEAD~1 | grep -q "packages/telegram-settings-menu/"; then
+            echo "MENU_CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "MENU_CHANGED=false" >> $GITHUB_ENV
+          fi
+          if git diff --name-only HEAD~1 | grep -q "packages/telegram-settings-menu-generator/"; then
+            echo "GENERATOR_CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "GENERATOR_CHANGED=false" >> $GITHUB_ENV
+          fi
+          if git diff --name-only HEAD~1 | grep -q "packages/tele-menu-demo-bot/"; then
+            echo "BOT_CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "BOT_CHANGED=false" >> $GITHUB_ENV
+          fi
 
+      - name: 🏗️ Сборка telegram-settings-menu
+        if: env.MENU_CHANGED == 'true'
+        run: yarn workspace telegram-settings-menu run build
+
+      - name: 🏗️ Сборка telegram-settings-menu-generator
+        if: env.GENERATOR_CHANGED == 'true'
+        run: yarn workspace telegram-settings-menu-generator run build
+
+      - name: 🏗️ Сборка tele-menu-demo-bot
+        if: env.BOT_CHANGED == 'true'
+        run: yarn workspace tele-menu-demo-bot run github:build
+      
       - name: 🚀 Публикация `telegram-settings-menu`
-        run: cd packages/telegram-settings-menu && npm publish --access public
+        if: env.MENU_CHANGED == 'true'
+        run: |
+          PUBLISHED_VERSION=$(npm view telegram-settings-menu version || echo "0.0.0")
+          CURRENT_VERSION=$(jq -r .version packages/telegram-settings-menu/package.json)
+
+          echo "Опубликованная версия: $PUBLISHED_VERSION"
+          echo "Текущая версия в package.json: $CURRENT_VERSION"
+
+          if [ "$CURRENT_VERSION" = "$PUBLISHED_VERSION" ]; then
+            echo "Версии совпадают, повышаем версию..."
+            yarn workspace telegram-settings-menu version patch
+            git config --local user.email "github-actions@github.com"
+            git config --local user.name "GitHub Actions"
+            git add packages/telegram-settings-menu/package.json
+            git commit -m "ci: bump telegram-settings-menu version [skip ci]"
+            git push
+          else
+            echo "Версия уже обновлена, пропускаем повышение версии."
+          fi
+          
+          NEW_VERSION=$(jq -r .version packages/telegram-settings-menu/package.json)
+
+          echo "Публикуем новую версию: $NEW_VERSION"
+
+          yarn workspace telegram-settings-menu npm publish --access public
+
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: 🚀 Публикация `telegram-settings-menu-generator`
-        run: cd packages/telegram-settings-menu-generator && npm publish --access public
+        if: env.GENERATOR_CHANGED == 'true'
+        run: |
+          PUBLISHED_VERSION=$(npm view telegram-settings-menu-generator version || echo "0.0.0")
+          CURRENT_VERSION=$(jq -r .version packages/telegram-settings-menu-generator/package.json)
+
+          echo "Опубликованная версия: $PUBLISHED_VERSION"
+          echo "Текущая версия в package.json: $CURRENT_VERSION"
+
+          if [ "$CURRENT_VERSION" = "$PUBLISHED_VERSION" ]; then
+            echo "Версии совпадают, повышаем версию..."
+            yarn workspace telegram-settings-menu-generator version patch
+            git config --local user.email "github-actions@github.com"
+            git config --local user.name "GitHub Actions"
+            git add packages/telegram-settings-menu-generator/package.json
+            git commit -m "ci: bump telegram-settings-menu-generator version [skip ci]"
+            git push
+          else
+            echo "Версия уже обновлена, пропускаем повышение версии."
+          fi
+          
+          NEW_VERSION=$(jq -r .version packages/telegram-settings-menu-generator/package.json)
+
+          echo "Публикуем новую версию: $NEW_VERSION"
+
+          yarn workspace telegram-settings-menu-generator npm publish --access public
+
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

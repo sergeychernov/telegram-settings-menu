@@ -1,6 +1,6 @@
 import { Handler } from '@yandex-cloud/function-types';
 import { Http } from '@yandex-cloud/function-types/dist/src/http';
-import { Telegraf } from 'telegraf';
+import { Context, Telegraf } from 'telegraf';
 
 import settingsSchema from './settings.json';
 import { type Settings } from './settings';

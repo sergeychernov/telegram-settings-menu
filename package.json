@@ -6,7 +6,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/sergeychernov/telegram-settings-menu"
+		"url": "git+https://github.com/sergeychernov/telegram-settings-menu.git"
 	},
 	"scripts": {
 		"build": "yarn workspaces foreach -A run build",

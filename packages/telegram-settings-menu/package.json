@@ -1,12 +1,12 @@
 {
 	"name": "telegram-settings-menu",
-	"version": "1.0.3",
+	"version": "1.0.18",
 	"description": "Генератор inline-меню для Telegram ботов",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/sergeychernov/telegram-settings-menu"
+		"url": "git+https://github.com/sergeychernov/telegram-settings-menu.git"
 	},
 	"scripts": {
 		"build": "tsc",
