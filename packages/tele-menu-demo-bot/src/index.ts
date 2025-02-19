@@ -20,7 +20,7 @@ const menu = new SettingsMenu<Settings>(settingsSchema as Schema, bot, {
   getUserContext: async (id: number) => {
     return userStateDB[id];
   },
-  updateUserContext: async (userContext) => {
+  updateUserContext: async (userContext, telegramUserContext) => {
     userStateDB[userContext.id] = userContext;
     return true;
   }

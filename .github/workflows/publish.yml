@@ -48,8 +48,26 @@ jobs:
             echo "BOT_CHANGED=false" >> $GITHUB_ENV
           fi
 
+      - name: 🔧 Установка Yandex Cloud CLI
+        if: env.BOT_CHANGED == 'true'
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh | bash
+          echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
+          source ~/.bashrc
+
+      - name: 🔧 Setup Yandex Cloud CLI
+        if: env.BOT_CHANGED == 'true'
+        run: |
+          yc --version
+          echo "${{ secrets.SA_KEY_FILE }}" | base64 --decode > packages/tele-menu-demo-bot/ydb-key.json
+          cat packages/tele-menu-demo-bot/ydb-key.json  # Проверка содержимого
+          yc config set service-account-key packages/tele-menu-demo-bot/ydb-key.json
+          yc config set cloud-id "${{ secrets.CLOUD_ID }}"
+          yc config set folder-id "${{ secrets.FOLDER_ID }}"
+          yc config profile list
+
       - name: 🏗️ Сборка telegram-settings-menu
-        if: env.MENU_CHANGED == 'true'
+        if: env.MENU_CHANGED == 'true' || env.BOT_CHANGED == 'true'
         run: yarn workspace telegram-settings-menu run build
 
       - name: 🏗️ Сборка telegram-settings-menu-generator
@@ -58,8 +76,30 @@ jobs:
 
       - name: 🏗️ Сборка tele-menu-demo-bot
         if: env.BOT_CHANGED == 'true'
-        run: yarn workspace tele-menu-demo-bot run github:build
+        run: |
+          yarn workspace tele-menu-demo-bot run build
+          
       
+      - name: 🚀 Публикация `tele-menu-demo-bot`
+        if: env.BOT_CHANGED == 'true'
+        run: |
+          yc serverless function list --folder-id "${{ secrets.FOLDER_ID }}" --cloud-id "${{ secrets.CLOUD_ID }}"
+          yc config list
+          echo "${{ secrets.BOT_ENV }}" | base64 --decode > packages/tele-menu-demo-bot/.env
+          echo "${{ secrets.ENV }}" | base64 --decode > .env
+          yarn workspace tele-menu-demo-bot version patch
+          git config --local user.email "github-actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add packages/tele-menu-demo-bot/package.json
+          git commit -m "ci: bump tele-menu-demo-bot version [skip ci]"
+          git push
+          ./scripts/publish-func-ver.sh tele-menu-demo-bot
+          rm -f packages/tele-menu-demo-bot/ydb-key.json
+        env:
+          SERVICE_ACCOUNT_ID: ${{ secrets.SERVICE_ACCOUNT_ID }}
+          CLOUD_ID: ${{ secrets.CLOUD_ID }}
+          FOLDER_ID: ${{ secrets.FOLDER_ID }}
+
       - name: 🚀 Публикация `telegram-settings-menu`
         if: env.MENU_CHANGED == 'true'
         run: |

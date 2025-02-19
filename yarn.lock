@@ -1726,7 +1726,7 @@ __metadata:
     "@yandex-cloud/function-types": "npm:^2.1.2"
     "@yandex-cloud/nodejs-sdk": "npm:^2.7.7"
     telegraf: "npm:^4.16.3"
-    telegram-settings-menu: "workspace:^1.0.16"
+    telegram-settings-menu: "npm:^1.0.19"
     typescript: "npm:^5.4.0"
     zip-cli: "npm:^0.0.0"
   languageName: unknown
@@ -1765,7 +1765,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"telegram-settings-menu@workspace:^1.0.16, telegram-settings-menu@workspace:packages/telegram-settings-menu":
+"telegram-settings-menu@npm:^1.0.19, telegram-settings-menu@workspace:packages/telegram-settings-menu":
   version: 0.0.0-use.local
   resolution: "telegram-settings-menu@workspace:packages/telegram-settings-menu"
   dependencies:
