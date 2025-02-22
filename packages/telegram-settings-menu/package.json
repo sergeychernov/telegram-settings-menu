@@ -11,7 +11,8 @@
 	"scripts": {
 		"build": "tsc",
 		"test": "echo \"No tests yet\"",
-		"publish": "npm publish --access public"
+		"publish": "npm publish --access public",
+		"publish:beta": "npm publish --tag beta  --ignore-scripts"
 	},
 	"dependencies": {
 		"lodash.isequal": "^4.5.0",

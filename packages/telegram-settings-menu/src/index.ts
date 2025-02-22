@@ -71,6 +71,7 @@ export type UserContext<T> = {
 	message_id?: number;
 	chat_id?: number;
 	state: T;
+	path: string[];
 }
 export class SettingsMenu<T> {
   
@@ -101,6 +102,7 @@ export class SettingsMenu<T> {
 		let userContext = await this.getUserContext(Number(telegramContext?.from?.id));
 		const gettedUserContext = JSON.parse(JSON.stringify(userContext));
 		const path = this.getPath(index);
+		userContext = { ...userContext, path };
 		const propertySchema = this.getPropertyByPath(path);
 		if (propertySchema && userContext) {
 			if (index < 0) {
@@ -143,7 +145,7 @@ export class SettingsMenu<T> {
 	}
 	public async show(telegramContext: Context) {
 		const id = telegramContext.from.id;
-		let userContext = await this.getUserContext(id) || { id, state:this.initializeStateWithDefaults()};
+		let userContext = await this.getUserContext(id) || { id, state:this.initializeStateWithDefaults(), path:[]};
 		userContext = { ...userContext, chat_id: telegramContext.chat?.id };
 		
 		const keyboard = this.createKeyboard(userContext, []);
