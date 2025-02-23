@@ -21,3 +21,4 @@ bin/
 .env
 
 ydb-key.json
+dep-key.json

@@ -60,8 +60,8 @@ jobs:
         run: |
           yc --version
           echo "${{ secrets.SA_KEY_FILE }}" | base64 --decode > packages/tele-menu-demo-bot/ydb-key.json
-          cat packages/tele-menu-demo-bot/ydb-key.json  # Проверка содержимого
-          yc config set service-account-key packages/tele-menu-demo-bot/ydb-key.json
+          echo "${{ secrets.DEP_KEY}}" | base64 --decode > packages/tele-menu-demo-bot/dep-key.json
+          yc config set service-account-key packages/tele-menu-demo-bot/dep-key.json
           yc config set cloud-id "${{ secrets.CLOUD_ID }}"
           yc config set folder-id "${{ secrets.FOLDER_ID }}"
           yc config profile list
@@ -84,7 +84,6 @@ jobs:
         if: env.BOT_CHANGED == 'true'
         run: |
           yc serverless function list --folder-id "${{ secrets.FOLDER_ID }}" --cloud-id "${{ secrets.CLOUD_ID }}"
-          yc config list
           echo "${{ secrets.BOT_ENV }}" | base64 --decode > packages/tele-menu-demo-bot/.env
           echo "${{ secrets.ENV }}" | base64 --decode > .env
           yarn workspace tele-menu-demo-bot version patch
