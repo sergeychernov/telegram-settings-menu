@@ -1,6 +1,6 @@
 {
 	"name": "telegram-settings-menu",
-	"version": "1.0.20",
+	"version": "1.0.21",
 	"description": "Генератор inline-меню для Telegram ботов",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",

@@ -69,7 +69,6 @@ type Property =
 export type UserContext<T> = {
 	id: number;
 	message_id?: number;
-	chat_id?: number;
 	state: T;
 	path: string[];
 }
@@ -124,7 +123,7 @@ export class SettingsMenu<T> {
 			{
 				await this.updateUserContext(userContext, telegramContext);
 				const keyboard = this.createKeyboard(userContext, path);
-				await this.bot.telegram.editMessageText(userContext.chat_id, userContext.message_id, undefined, this.getTitlesByPath(path).join(' > '), Markup.inlineKeyboard(keyboard));
+				await this.bot.telegram.editMessageText(userContext.id, userContext.message_id, undefined, this.getTitlesByPath(path).join(' > '), Markup.inlineKeyboard(keyboard));
 			}
 		} else {
 			console.log('!propertySchema || !userContext', !!propertySchema,!!userContext,path, index);
@@ -146,7 +145,6 @@ export class SettingsMenu<T> {
 	public async show(telegramContext: Context) {
 		const id = telegramContext.from.id;
 		let userContext = await this.getUserContext(id) || { id, state:this.initializeStateWithDefaults(), path:[]};
-		userContext = { ...userContext, chat_id: telegramContext.chat?.id };
 		
 		const keyboard = this.createKeyboard(userContext, []);
 		const message = await telegramContext.reply(this.getTitlesByPath([]).join(' > '), Markup.inlineKeyboard(keyboard));

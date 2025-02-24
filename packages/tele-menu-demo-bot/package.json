@@ -1,6 +1,6 @@
 {
 	"name": "tele-menu-demo-bot",
-	"version": "1.0.23",
+	"version": "1.0.24",
 	"description": "Генератор inline-меню для Telegram ботов",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -19,7 +19,9 @@
 		"@yandex-cloud/function-types": "^2.1.2",
 		"@yandex-cloud/nodejs-sdk": "^2.7.7",
 		"telegraf": "^4.16.3",
-		"telegram-settings-menu": "^1.0.19"
+		"telegram-settings-menu": "^1.0.20",
+		"winston": "^3.17.0",
+		"ydb-sdk": "^5.8.0"
 	},
 	"devDependencies": {
 		"typescript": "^5.4.0",
