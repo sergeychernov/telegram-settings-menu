@@ -29,3 +29,7 @@ SA_KEY_FILE={имя файла с ключами для доступа к YDB}
 ./scripts/create-func.sh tele-menu-demo-bot
 
 Демонстрация работы меню
+
+### Ссылка для связывания telegramId с inner userId
+
+https://t.me/tele_menu_demo_bot?start=1234

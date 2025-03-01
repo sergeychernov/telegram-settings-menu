@@ -6,7 +6,7 @@ import settingsSchema from './settings.json';
 import { type Settings } from './settings';
 import { SettingsMenu, type UserContext } from 'telegram-settings-menu';
 import { type Schema } from 'ts-json-schema-generator';
-import { initDb, upsertUserContext, getUserContext as getUserContextDB } from './db';
+import { initDb, upsertUserContext, getUserContext as getUserContextDB, upsertUserId } from './db';
 import * as fs from 'fs';
 import { escapeMarkdown } from './markdown';
 
@@ -15,13 +15,31 @@ if (!process.env.BOT_TOKEN) {
 }
 
 const bot = new Telegraf(process.env.BOT_TOKEN ?? '');
-//bot.start((ctx) => ctx.reply(`Hello. \nMy name Serverless Hello Telegram Bot \nI'm working on Cloud Function in the Yandex Cloud.`))
+// Link example for this bot (@tele_menu_demo_bot):
+// https://t.me/tele_menu_demo_bot?start=<user_id>
+// This link will send the /start command with the <user_id> as a parameter.
 
+bot.start(async (ctx) => {
+  const userIdFromQuery = ctx.message?.text?.split(' ')[1]; // Extract userId from command arguments (/start 12345)
+  let userId: string;
+  if (userIdFromQuery) {
+      userId = userIdFromQuery;
+  }
+  let replyText = `Hello! \nMy name is Serverless Settings Bot\nI'm working on Cloud Function in the Yandex Cloud.\n`;
+  if (!userId) {
+    replyText += `Please use the link with user ID like this: https://t.me/tele_menu_demo_bot?start=<user_id>`;
+  } else {
+    replyText += `Your id is ${ctx?.from?.id} -> ${userId} `;
+    await upsertUserId(ctx?.from?.id, userId);
+  }
+  
+  await ctx.reply(replyText);
+});
 const menu = new SettingsMenu<Settings>(settingsSchema as Schema, bot, {
   getUserContext: async (id: number) => {
     return getUserContextDB<Settings>(id);
   },
-  updateUserContext: async (userContext, telegramUserContext) => {
+  updateUserContext: async (userContext: UserContext<Settings>, telegramUserContext) => {
     await upsertUserContext(userContext.id, userContext);
     return true;
   }

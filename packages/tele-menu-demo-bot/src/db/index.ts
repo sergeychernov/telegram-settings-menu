@@ -66,9 +66,55 @@ export async function upsertUserContext(id: number, context: object) {
 		});
 		
 	});
-    
-
     console.log(`UserContext с id=${id} обновлён.`);
+}
+
+export async function upsertUserId(id: number, userId: string) {
+    const query = `
+        DECLARE $id AS Int64;
+        DECLARE $userId AS Utf8;
+        UPSERT INTO UserContext (id, userId)
+        VALUES ($id, $userId);
+    `;
+
+    await driver.tableClient.withSession(async (session) => {
+        const preparedQuery = await session.prepareQuery(query);
+        await session.executeQuery(preparedQuery, {
+            $id: TypedValues.int64(id),
+            $userId: TypedValues.utf8(userId),
+        });
+
+    });
+    console.log(`UserContext userId=${userId} updated for id=${id}`);
+}
+
+export async function getUserContextByUserId<T>(userId: string): Promise<UserContext<T> | null> {
+    const query = `
+        DECLARE $userId AS Utf8;
+
+        SELECT context FROM UserContext
+        WHERE userId = $userId;
+    `;
+
+    return await driver.tableClient.withSession(async (session) => {
+        const preparedQuery = await session.prepareQuery(query);
+        const resultSet = await session.executeQuery(preparedQuery, {
+            $userId: TypedValues.utf8(userId),
+        });
+
+        if (resultSet.resultSets.length === 0 || resultSet.resultSets[0].rows.length === 0) {
+            return null;
+        }
+
+        const row = resultSet.resultSets[0].rows[0];
+        const contextValue = row.items[0];
+
+        if (!contextValue || !contextValue.textValue) {
+            return null;
+        }
+
+        return JSON.parse(contextValue.textValue);
+    });
 }
 
 async function createTables() {
@@ -83,6 +129,7 @@ async function createTables() {
 				(
 					id Int64,
 					context Json,
+					userId Utf8?,
 					PRIMARY KEY (id)
 				);`
 	
