@@ -77,21 +77,20 @@ jobs:
       - name: 🏗️ Сборка tele-menu-demo-bot
         if: env.BOT_CHANGED == 'true'
         run: |
-          yarn workspace tele-menu-demo-bot run build
-          
-      
-      - name: 🚀 Публикация `tele-menu-demo-bot`
-        if: env.BOT_CHANGED == 'true'
-        run: |
-          yc serverless function list --folder-id "${{ secrets.FOLDER_ID }}" --cloud-id "${{ secrets.CLOUD_ID }}"
-          echo "${{ secrets.BOT_ENV }}" | base64 --decode > packages/tele-menu-demo-bot/.env
-          echo "${{ secrets.ENV }}" | base64 --decode > .env
           yarn workspace tele-menu-demo-bot version patch
           git config --local user.email "github-actions@github.com"
           git config --local user.name "GitHub Actions"
           git add packages/tele-menu-demo-bot/package.json
           git commit -m "ci: bump tele-menu-demo-bot version [skip ci]"
           git push
+          yarn workspace tele-menu-demo-bot run build
+          
+      - name: 🚀 Публикация `tele-menu-demo-bot`
+        if: env.BOT_CHANGED == 'true'
+        run: |
+          yc serverless function list --folder-id "${{ secrets.FOLDER_ID }}" --cloud-id "${{ secrets.CLOUD_ID }}"
+          echo "${{ secrets.BOT_ENV }}" | base64 --decode > packages/tele-menu-demo-bot/.env
+          echo "${{ secrets.ENV }}" | base64 --decode > .env
           ./scripts/publish-func-ver.sh tele-menu-demo-bot
           rm -f packages/tele-menu-demo-bot/ydb-key.json
         env:
