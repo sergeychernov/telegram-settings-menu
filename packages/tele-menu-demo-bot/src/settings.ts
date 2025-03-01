@@ -1,25 +1,26 @@
 /**
- * @title Настройки
+ * @title Settings
  */
 export type Settings = {
 	/**
-     * @title Подписка на новости
+     * @title News Subscription
      */
 	subscriptionToNews?: boolean;
 
 	/**
-	 * @default 'Ежедневно'
-	 * @title Период
+	 * @default 'Daily'
+	 * @title Period
 	 * @format inline
+	 * @condition {subscriptionToNews:true}
 	 */
-	period: 'Ежеминутно' | 'Ежечасно' | 'Ежедневно';
+	period: 'Minutely' | 'Hourly' | 'Daily';
 
 	/**
-	 * @title Boolean
+	 * @title Boolean Options
 	 */
 	boolean: {
 		/**
-		 * @title Без Default
+		 * @title Without Default
 		 */
 		withoutDefault?: boolean;
 

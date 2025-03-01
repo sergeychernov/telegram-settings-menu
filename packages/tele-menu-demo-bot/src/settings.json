@@ -7,17 +7,17 @@
       "properties": {
         "subscriptionToNews": {
           "type": "boolean",
-          "title": "Подписка на новости"
+          "title": "News Subscription"
         },
         "period": {
           "type": "string",
           "enum": [
-            "Ежеминутно",
-            "Ежечасно",
-            "Ежедневно"
+            "Minutely",
+            "Hourly",
+            "Daily"
           ],
-          "default": "Ежедневно",
-          "title": "Период",
+          "default": "Daily",
+          "title": "Period",
           "format": "inline"
         },
         "boolean": {
@@ -25,7 +25,7 @@
           "properties": {
             "withoutDefault": {
               "type": "boolean",
-              "title": "Без Default"
+              "title": "Without Default"
             },
             "defaultFalse": {
               "type": "boolean",
@@ -43,7 +43,7 @@
             "defaultTrue"
           ],
           "additionalProperties": false,
-          "title": "Boolean"
+          "title": "Boolean Options"
         }
       },
       "required": [
@@ -51,7 +51,7 @@
         "boolean"
       ],
       "additionalProperties": false,
-      "title": "Настройки"
+      "title": "Settings"
     }
   }
 }

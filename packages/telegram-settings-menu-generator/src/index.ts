@@ -12,7 +12,7 @@ const config:tsj.Config = {
 	extraTags: [
 		'roles',
 		'default',
-		'quiz-type'
+		'condition',
     ],
 }
 const schema = tsj.createGenerator(config).createSchema(config.type);
