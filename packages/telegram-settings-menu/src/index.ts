@@ -3,6 +3,7 @@ import { InlineKeyboardButton, Message, Update } from "telegraf/types";
 import { Markup, Telegraf } from 'telegraf';
 import { type Schema } from 'ts-json-schema-generator';
 import isEqual from "lodash.isequal";
+import { getLocalizedText } from "./localization";
 function escapeStringRegexp(input:string) {
 	if (typeof input !== 'string') {
 		throw new TypeError('Expected a string');
@@ -40,8 +41,6 @@ function getIcon<T>(state: T,  path:string[]=[]): string {
 }
 
 type SchemaPath = string[];
-type TelegramContext = Context<{ message: Update.New & Update.NonChannel & Message.TextMessage; update_id: number; }> & Omit<Context<Update>, keyof Context<Update>>;
-		
 
 type Property = 
 {
@@ -122,7 +121,7 @@ export class SettingsMenu<T> {
 			if (!isEqual(gettedUserContext, userContext))
 			{
 				await this.updateUserContext(userContext, telegramContext);
-				const keyboard = this.createKeyboard(userContext, path);
+				const keyboard = this.createKeyboard(userContext, path, telegramContext);
 				await this.bot.telegram.editMessageText(userContext.id, userContext.message_id, undefined, this.getTitlesByPath(path).join(' > '), Markup.inlineKeyboard(keyboard));
 			}
 		} else {
@@ -146,7 +145,7 @@ export class SettingsMenu<T> {
 		const id = telegramContext.from.id;
 		let userContext = await this.getUserContext(id) || { id, state:this.initializeStateWithDefaults(), path:[]};
 		
-		const keyboard = this.createKeyboard(userContext, []);
+		const keyboard = this.createKeyboard(userContext, [], telegramContext);
 		const message = await telegramContext.reply(this.getTitlesByPath([]).join(' > '), Markup.inlineKeyboard(keyboard));
 		userContext = { ...userContext, message_id: message.message_id };
 		await this.updateUserContext(userContext, telegramContext);
@@ -280,7 +279,7 @@ export class SettingsMenu<T> {
 	}
 
     // Генерация inline-клавиатуры
-	public createKeyboard(userContext: UserContext<T>, path: string[]): InlineKeyboardButton[][] {
+	public createKeyboard(userContext: UserContext<T>, path: string[], telegramContext?: Context): InlineKeyboardButton[][] {
 		let currentPath = [...path];
 		let propertySchema = this.getPropertyByPath(path);
 		
@@ -300,7 +299,7 @@ export class SettingsMenu<T> {
 		const buttons: InlineKeyboardButton[][] = [];
 		if (currentPath.length > 0) {
 			buttons.push([{
-				text: "🔙 Наверх",
+				text: `🔙 ${getLocalizedText('back', telegramContext)}`,
 				callback_data: this.schema.$ref + ':' +`-${this.getIndex(currentPath.slice(0, -1))}`
 			}]);
 		}

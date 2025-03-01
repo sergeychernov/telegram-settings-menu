@@ -18,7 +18,10 @@
           ],
           "default": "Daily",
           "title": "Period",
-          "format": "inline"
+          "format": "inline",
+          "condition": {
+            "subscriptionToNews": true
+          }
         },
         "boolean": {
           "type": "object",
