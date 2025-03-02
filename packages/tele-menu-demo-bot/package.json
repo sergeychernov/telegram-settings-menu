@@ -1,6 +1,6 @@
 {
 	"name": "tele-menu-demo-bot",
-	"version": "1.0.27",
+	"version": "1.0.28",
 	"description": "Генератор inline-меню для Telegram ботов",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
