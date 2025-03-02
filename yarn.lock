@@ -1764,6 +1764,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sift@npm:^17.1.3":
+  version: 17.1.3
+  resolution: "sift@npm:17.1.3"
+  checksum: 10c0/bb05d1d65cc9b549b402c1366ba1fcf685311808b6d5c2f4fa2f477d7b524218bbf6c99587562d5613d407820a6b5a7cad809f89c3f75c513ff5d8c0e0a0cead
+  languageName: node
+  linkType: hard
+
 "signal-exit@npm:^4.0.1":
   version: 4.1.0
   resolution: "signal-exit@npm:4.1.0"
@@ -1966,6 +1973,7 @@ __metadata:
   dependencies:
     "@types/lodash.isequal": "npm:^4"
     lodash.isequal: "npm:^4.5.0"
+    sift: "npm:^17.1.3"
     telegraf: "npm:^4.16.3"
     typescript: "npm:^5.4.0"
   languageName: unknown

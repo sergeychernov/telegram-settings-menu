@@ -4,6 +4,7 @@ import { Markup, Telegraf } from 'telegraf';
 import { type Schema } from 'ts-json-schema-generator';
 import isEqual from "lodash.isequal";
 import { getLocalizedText } from "./localization";
+import sift from "sift";
 function escapeStringRegexp(input:string) {
 	if (typeof input !== 'string') {
 		throw new TypeError('Expected a string');
@@ -48,7 +49,7 @@ type Property =
 	title?: string;
 	format?: string;
 	role?: string[];
-	
+	condition?: any;
 } &(
 	{
 		type: "boolean";
@@ -306,6 +307,12 @@ export class SettingsMenu<T> {
 		
 		if (propertySchema.type === 'object') {
 			for (const [key, value] of Object.entries(propertySchema.properties)) {
+				if (value?.condition) {
+					const condition = sift(value.condition);
+					if (!condition(userContext.state)) {
+						continue;
+					}
+				}
 				const button = this.createButton([...currentPath, key], value, userContext.state);
 				buttons.push(button);
 			}
