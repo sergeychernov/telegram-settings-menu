@@ -1,7 +1,9 @@
+
+
 /**
  * @title Settings
  */
-export type Settings = {
+export interface Settings {
 	/**
      * @title News Subscription
      */
@@ -12,6 +14,7 @@ export type Settings = {
 	 * @title Period
 	 * @format inline
 	 * @condition {subscriptionToNews:true}
+	 * @ru {enum:['Ежеминутно','Ежечасно','Ежедневно'], title:'Период'}
 	 */
 	period: 'Minutely' | 'Hourly' | 'Daily';
 

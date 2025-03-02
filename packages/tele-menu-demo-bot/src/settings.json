@@ -21,6 +21,14 @@
           "format": "inline",
           "condition": {
             "subscriptionToNews": true
+          },
+          "ru": {
+            "enum": [
+              "Ежеминутно",
+              "Ежечасно",
+              "Ежедневно"
+            ],
+            "title": "Период"
           }
         },
         "boolean": {

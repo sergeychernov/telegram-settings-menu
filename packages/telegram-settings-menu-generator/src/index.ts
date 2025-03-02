@@ -13,6 +13,10 @@ const config:tsj.Config = {
 		'roles',
 		'default',
 		'condition',
+		'en',
+		'ru',
+		'sr',
+		'uk'
     ],
 }
 const schema = tsj.createGenerator(config).createSchema(config.type);
