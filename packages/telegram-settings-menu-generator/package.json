@@ -1,6 +1,6 @@
 {
 	"name": "telegram-settings-menu-generator",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "CLI-генератор JSON схем для Telegram-меню",
 	"bin": "./bin/index.js",
 	"repository": {
