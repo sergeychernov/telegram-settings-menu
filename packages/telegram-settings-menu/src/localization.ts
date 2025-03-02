@@ -21,6 +21,11 @@ export function getLocalizedText(key: string, context: Context): string {
             up: 'Вгору',
             back: 'Назад',
             // Add other Ukrainian translations as needed
+		},
+		pl: { // Польский
+            up: 'W górę',
+            back: 'Wstecz',
+            // ... другие польские переводы ...
         },
         // Add more languages as needed
     };

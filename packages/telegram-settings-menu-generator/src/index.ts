@@ -16,7 +16,8 @@ const config:tsj.Config = {
 		'en',
 		'ru',
 		'sr',
-		'uk'
+		'uk',
+		'pl'
     ],
 }
 const schema = tsj.createGenerator(config).createSchema(config.type);
