@@ -31,6 +31,8 @@ Here's a basic example of how to integrate `telegram-settings-menu` with a Teleg
 import { SettingsMenu, UserContext } from 'telegram-settings-menu';
 import settingsSchema from './settings.json'; // Generated using telegram-settings-menu-generator
 import { Telegraf } from 'telegraf';
+import { Settings } from './settings';
+import { Schema } from 'ts-json-schema-generator';
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const userStateDB: Record<number, UserContext<Settings>> = {};
@@ -48,7 +50,7 @@ const menu = new SettingsMenu<Settings>(settingsSchema as Schema, bot, {
 bot.command('settings', async (ctx) => {
   await menu.show(ctx);
 });
-
+// Example for handling updates in a serverless environment (e.g., Yandex Cloud Functions)
 export const handler: Handler.Http = async (event: Http.Event) => {
   const message = JSON.parse(event.body);
   await bot.handleUpdate(message);
@@ -58,7 +60,6 @@ export const handler: Handler.Http = async (event: Http.Event) => {
   };
 };
 ```
-
 ## API
 
 ### `new SettingsMenu(schema: Schema, bot: Telegraf, options: MenuOptions)`
@@ -67,100 +68,22 @@ Creates a new settings menu.
 #### `MenuOptions`
 | Property        | Type     | Description                                        |
 |---------------|---------|------------------------------------------------|
-| `getUserContext` | function | Retrieves the user's settings context         |
-| `updateUserContext` | function | Updates the user's settings context         |
+| `getUserContext` | (id: number) => Promise<UserContext> | Retrieves the user's settings context         |
+| `updateUserContext` | (userContext: UserContext) => Promise<boolean> | Updates the user's settings context. Returns true on success.         |
 
 ### `menu.show(ctx: Context)`
 Displays the settings menu to the user.
 
 ## Example
 
-https://t.me/tele_menu_demo_bot
+A demo bot is available: https://t.me/tele_menu_demo_bot
 
+## Translations
 
+[English](README.md)
+[Russian](README.ru.md)
 
 ## License
 
 This project is licensed under the MIT License.
-
----
-
-# Меню настроек Telegram
-
-Простая и гибкая библиотека для создания меню настроек в Telegram-ботах на основе [Telegraf](https://github.com/telegraf/telegraf).
-
-## Установка
-
-Установите пакет с помощью npm или yarn:
-
-```sh
-npm install telegram-settings-menu
-```
-
-или
-
-```sh
-yarn add telegram-settings-menu
-```
-
-## Возможности
-
-- Легко создавайте и управляйте меню настроек для вашего бота
-- Поддержка inline-клавиатуры
-- Гибкая настройка параметров
-- Поддержка TypeScript
-
-## Использование
-
-Пример интеграции `telegram-settings-menu` в бота на Telegraf:
-
-```ts
-import { SettingsMenu, UserContext } from 'telegram-settings-menu';
-import settingsSchema from './settings.json'; // Генерируется с помощью telegram-settings-menu-generator
-import { Telegraf } from 'telegraf';
-
-const bot = new Telegraf(process.env.BOT_TOKEN);
-const userStateDB: Record<number, UserContext<Settings>> = {};
-
-const menu = new SettingsMenu<Settings>(settingsSchema as Schema, bot, {
-  getUserContext: async (id: number) => {
-    return userStateDB[id];
-  },
-  updateUserContext: async (userContext) => {
-    userStateDB[userContext.id] = userContext;
-    return true;
-  }
-});
-
-bot.command('settings', async (ctx) => {
-  await menu.show(ctx);
-});
-
-export const handler: Handler.Http = async (event: Http.Event) => {
-  const message = JSON.parse(event.body);
-  await bot.handleUpdate(message);
-  return {
-    statusCode: 200,
-    body: '',
-  };
-};
-```
-
-## API
-
-### `new SettingsMenu(schema: Schema, bot: Telegraf, options: MenuOptions)`
-Создает новое меню настроек.
-
-#### `MenuOptions`
-| Свойство        | Тип     | Описание                                      |
-|---------------|---------|--------------------------------------------|
-| `getUserContext` | function | Получает контекст настроек пользователя |
-| `updateUserContext` | function | Обновляет контекст настроек пользователя |
-
-### `menu.show(ctx: Context)`
-Отображает меню настроек пользователю.
-
-## Лицензия
-
-Этот проект распространяется по лицензии MIT.
 
